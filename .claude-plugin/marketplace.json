@@ -1,0 +1,36 @@
+{
+  "name": "content-marketing-skills",
+  "description": "Agent Skills for planning, writing and repurposing content that ranks and converts.",
+  "owner": {
+    "name": "Saizul Amin",
+    "url": "https://github.com/saizul"
+  },
+  "plugins": [
+    {
+      "name": "content-marketing-skills",
+      "source": "./",
+      "description": "Editorial calendars, SEO blog posts, LinkedIn posts, repurposing, internal links, headline tests, newsletters and content refresh from Search Console data.",
+      "category": "marketing",
+      "tags": [
+        "content-marketing",
+        "seo",
+        "copywriting",
+        "linkedin",
+        "newsletter",
+        "blogging",
+        "search-console",
+        "repurposing"
+      ],
+      "skills": [
+        "./skills/editorial-calendar",
+        "./skills/blog-post-writer",
+        "./skills/linkedin-post-writer",
+        "./skills/content-repurposing",
+        "./skills/internal-linking",
+        "./skills/headline-testing",
+        "./skills/newsletter-writer",
+        "./skills/content-refresh"
+      ]
+    }
+  ]
+}

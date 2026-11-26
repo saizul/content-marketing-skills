@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Release artifacts (built by .github/workflows/release.yml)
+dist/
+
+# Local working files: drafts and real Search Console exports can contain client data
+drafts/
+exports/
+.env
+*.env
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

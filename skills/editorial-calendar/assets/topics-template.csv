@@ -1,0 +1,8 @@
+cluster,title,keyword,type,funnel,format,priority,owner
+Cluster A,Pillar guide for the broad topic,head keyword,pillar,tofu,guide,1,
+Cluster A,How to solve the first specific problem,long-tail keyword one,spoke,mofu,how-to,2,
+Cluster A,Template or checklist people can download,keyword template,spoke,bofu,template,3,
+Cluster A,Tool or approach comparison,x vs y,spoke,bofu,comparison,4,
+Cluster B,Pillar guide for the second topic,second head keyword,pillar,tofu,guide,1,
+Cluster B,Case study with numbers,keyword case study,spoke,mofu,case-study,2,
+Cluster B,Common mistakes and how to avoid them,keyword mistakes,spoke,tofu,list,3,

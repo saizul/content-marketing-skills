@@ -1,0 +1,25 @@
+{
+  "name": "content-marketing-skills",
+  "displayName": "Content Marketing Skills",
+  "version": "0.1.0",
+  "description": "Agent Skills for content marketing: editorial calendars from topic clusters, SEO blog posts with draft scoring, LinkedIn posts, repurposing one post into four channels, internal link suggestions, headline scoring, newsletter checks and content decay from Search Console exports.",
+  "author": {
+    "name": "Saizul Amin",
+    "url": "https://github.com/saizul"
+  },
+  "homepage": "https://github.com/saizul/content-marketing-skills",
+  "repository": "https://github.com/saizul/content-marketing-skills",
+  "license": "MIT",
+  "keywords": [
+    "content-marketing",
+    "seo",
+    "copywriting",
+    "editorial-calendar",
+    "linkedin",
+    "newsletter",
+    "email-marketing",
+    "internal-linking",
+    "search-console",
+    "content-repurposing"
+  ]
+}

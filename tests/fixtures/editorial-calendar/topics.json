@@ -1,0 +1,17 @@
+{
+  "clusters": [
+    {
+      "name": "Email",
+      "pillar": {"title": "Email Newsletter Guide for Founders", "keyword": "email newsletter", "funnel": "tofu"},
+      "topics": [
+        {"title": "Subject Lines That Get Opened", "keyword": "newsletter subject lines", "funnel": "mofu"},
+        "Preview Text Explained"
+      ]
+    },
+    {
+      "name": "LinkedIn",
+      "pillar": "LinkedIn Content Strategy",
+      "topics": [{"title": "LinkedIn Hooks That Stop the Scroll", "keyword": "linkedin hooks", "funnel": "mofu"}]
+    }
+  ]
+}

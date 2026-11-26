@@ -1,0 +1,46 @@
+name: Bug report
+description: A script crashed, reported a wrong finding, or a skill gave wrong or misleading advice
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not paste client data, unpublished drafts you cannot share, subscriber lists or full Search Console exports.**
+        Reduce the input to the few lines or rows that reproduce the problem and replace URLs with example.com.
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Skill
+      options:
+        - editorial-calendar
+        - blog-post-writer
+        - linkedin-post-writer
+        - content-repurposing
+        - internal-linking
+        - headline-testing
+        - newsletter-writer
+        - content-refresh
+        - validator / repository tooling
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: The command you ran, its output, and (for wrong findings) a minimal redacted input file.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "Python 3.12, macOS, Claude Code / Codex CLI, Hugo blog"
+    validations:
+      required: true
