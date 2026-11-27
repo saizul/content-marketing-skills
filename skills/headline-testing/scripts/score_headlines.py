@@ -5,6 +5,9 @@ Length targets depend on --type: seo (title tag, ~50-60 chars before Google trun
 blog (on-page H1), email (subject line, <= 50 chars), social (LinkedIn/X hook). Flags
 clickbait phrases, ALL CAPS, repeated punctuation and vague words.
 
+--suffix adds the text your CMS appends to every title tag (for example " | Acme Blog")
+before the length is scored, so the limit applies to what search results actually show.
+
 The score is a heuristic for comparing variants of the same idea, not a prediction of
 click-through rate. Real tests (search CTR, email A/B, social posts) decide.
 
@@ -67,10 +70,13 @@ FORMULAS = [
 ]
 
 
-def score_headline(text: str, kind: str = "seo", keyword: str | None = None) -> dict:
+def score_headline(text: str, kind: str = "seo", keyword: str | None = None, suffix: str = "") -> dict:
     h = re.sub(r"\s+", " ", text).strip()
+    suffix = re.sub(r"\s+", " ", suffix or "")
+    if h and suffix and h.lower().endswith(suffix.strip().lower()):
+        suffix = ""  # the headline already carries the suffix; do not count it twice
     lo, hi, hard = TYPES[kind]
-    chars = len(h)
+    chars = len(h) + len(suffix)
     words = re.findall(r"[A-Za-z0-9][A-Za-z0-9'-]*", h)
     lower_words = [w.lower() for w in words]
     flags: list[str] = []
@@ -87,6 +93,8 @@ def score_headline(text: str, kind: str = "seo", keyword: str | None = None) -> 
         flags.append(f"long: {chars} chars (ideal {lo}-{hi})")
     if chars > hard:
         flags.append(f"likely truncated after ~{hard} chars")
+    if suffix and chars > hi >= len(h):
+        flags.append(f"suffix {suffix.strip()!r} pushes it over {hi} chars; shorten the headline or the suffix")
 
     # Words (10)
     n = len(words)
@@ -114,8 +122,8 @@ def score_headline(text: str, kind: str = "seo", keyword: str | None = None) -> 
             parts["keyword"] = 0
             flags.append(f"missing keyword '{keyword}'")
         else:
-            parts["keyword"] = 15 if pos <= chars / 2 else 10
-            if pos > chars / 2:
+            parts["keyword"] = 15 if pos <= len(h) / 2 else 10
+            if pos > len(h) / 2:
                 flags.append("keyword is in the second half; move it forward")
     else:
         parts["keyword"] = None
@@ -148,6 +156,7 @@ def score_headline(text: str, kind: str = "seo", keyword: str | None = None) -> 
     total = round(100 * sum(scored.values()) / max_points)
     return {
         "headline": h,
+        "title": h + suffix,
         "score": min(100, total),
         "chars": chars,
         "words": n,
@@ -159,7 +168,7 @@ def score_headline(text: str, kind: str = "seo", keyword: str | None = None) -> 
     }
 
 
-def rank(headlines: list[str], kind: str = "seo", keyword: str | None = None) -> list[dict]:
+def rank(headlines: list[str], kind: str = "seo", keyword: str | None = None, suffix: str = "") -> list[dict]:
     seen = set()
     results = []
     for h in headlines:
@@ -167,7 +176,7 @@ def rank(headlines: list[str], kind: str = "seo", keyword: str | None = None) ->
         if not key or key in seen:
             continue
         seen.add(key)
-        results.append(score_headline(h, kind, keyword))
+        results.append(score_headline(h, kind, keyword, suffix))
     return sorted(results, key=lambda r: (-r["score"], r["chars"]))
 
 
@@ -180,6 +189,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--file", help="file with one headline per line (- for stdin)")
     p.add_argument("--type", choices=sorted(TYPES), default="seo", help="length targets (default seo)")
     p.add_argument("--keyword", help="focus keyword that should appear early")
+    p.add_argument(
+        "--suffix",
+        default="",
+        help="text appended to every title, e.g. ' | Acme Blog'; counted in the length score",
+    )
     p.add_argument("--min-score", type=int, default=60, help="exit 1 if no headline reaches it (default 60)")
     p.add_argument("--json", action="store_true", help="print JSON")
     args = p.parse_args(argv)
@@ -197,9 +211,14 @@ def main(argv: list[str] | None = None) -> int:
     if not headlines:
         print("error: no headlines given", file=sys.stderr)
         return 2
-    results = rank(headlines, args.type, args.keyword)
+    results = rank(headlines, args.type, args.keyword, args.suffix)
     if args.json:
-        print(json.dumps({"type": args.type, "keyword": args.keyword, "results": results}, indent=2))
+        print(
+            json.dumps(
+                {"type": args.type, "keyword": args.keyword, "suffix": args.suffix, "results": results},
+                indent=2,
+            )
+        )
     else:
         print(f"{'score':>5}  {'chars':>5}  headline")
         for r in results:

@@ -65,3 +65,41 @@ def test_cli(tmp_path):
     assert piped.returncode == 0
     assert run_script(SKILL, SCRIPT, "--file", str(tmp_path / "none.txt")).returncode == 2
     assert run_script(SKILL, SCRIPT, "--file", "-", stdin="").returncode == 2
+
+
+def test_suffix_counts_towards_length():
+    head = "How to Build a Content Calendar That Works"  # 42 chars
+    plain = m.score_headline(head, "seo")
+    branded = m.score_headline(head, "seo", suffix=" | Acme Marketing Blog")
+    assert plain["chars"] == len(head) and plain["parts"]["length"] == 25
+    assert branded["chars"] == len(head) + len(" | Acme Marketing Blog")
+    assert branded["title"] == head + " | Acme Marketing Blog"
+    assert branded["parts"]["length"] < 25
+    assert any("suffix '| Acme Marketing Blog' pushes it over 60" in f for f in branded["flags"])
+
+
+def test_suffix_already_in_headline_is_not_doubled():
+    r = m.score_headline("Content Calendar Mistakes | Acme", "seo", suffix=" | Acme")
+    assert r["chars"] == len("Content Calendar Mistakes | Acme")
+    assert r["title"] == "Content Calendar Mistakes | Acme"
+
+
+def test_suffix_does_not_move_keyword_position():
+    r = m.score_headline(
+        "Why Every Team Needs a Content Calendar", "seo", "content calendar", suffix=" | A Very Long Brand"
+    )
+    assert r["parts"]["keyword"] == 10
+    r = m.score_headline(
+        "Content Calendar Basics for Small Teams", "seo", "content calendar", suffix=" | A Very Long Brand"
+    )
+    assert r["parts"]["keyword"] == 15
+
+
+def test_suffix_cli_json():
+    res = run_script(
+        SKILL, SCRIPT, "--json", "--suffix", " | Acme", "--min-score", "0", "7 Content Calendar Mistakes to Avoid"
+    )
+    assert res.returncode == 0, res.stderr
+    data = json.loads(res.stdout)
+    assert data["suffix"] == " | Acme"
+    assert data["results"][0]["title"] == "7 Content Calendar Mistakes to Avoid | Acme"

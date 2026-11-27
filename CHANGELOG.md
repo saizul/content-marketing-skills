@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `headline-testing`: `score_headlines.py --suffix " | Acme Blog"` counts the text a CMS
+  appends to every title tag in the length score, flags headlines the suffix pushes over the
+  ideal length and reports the full `title` in JSON. Keyword position is still measured on
+  the headline alone.
+
 ## [0.1.0] - 2026-11-26
 
 ### Added
