@@ -43,7 +43,11 @@ Paths below are relative to this skill's folder (in Claude Code: `${CLAUDE_SKILL
      "7 Content Calendar Mistakes That Quietly Kill Your Traffic"
    python3 scripts/score_headlines.py --file variants.txt --type email --json
    printf '%s\n' "Variant A" "Variant B" | python3 scripts/score_headlines.py --file - --type social
+   python3 scripts/score_headlines.py --file variants.txt --type seo --suffix " | Acme Blog"
    ```
+   If the CMS appends the site name to every title tag, pass it with `--suffix` so the
+   length score uses the full title Google shows (a headline that already ends with the
+   suffix is not counted twice).
    Lines starting with `#` in the file are ignored; duplicates are removed. Exit 1 when no
    variant reaches `--min-score` (default 60).
 4. **Edit, do not just pick.** Fix the flags on the top 3-5 (too long, keyword late,
